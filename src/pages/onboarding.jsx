@@ -13,21 +13,22 @@ const Onboarding = () => {
   };
 
   const handleRoleSelection = async (role) => {
-    try {
-      await user.update({ unsafeMetadata: { role } });
-      // Reload the user object to get the latest data
-      await user.reload();
-      navigateUser(role);
-    } catch (err) {
-      console.error("Error updating role:", err);
-    }
+    await user
+      .update({ unsafeMetadata: { role } })
+      .then(() => {
+        console.log(`Role updated to: ${role}`);
+        navigateUser(role);
+      })
+      .catch((err) => {
+        console.error("Error updating role:", err);
+      });
   };
 
   useEffect(() => {
     if (user?.unsafeMetadata?.role) {
       navigateUser(user.unsafeMetadata.role);
     }
-  }, [user, navigate]); // Added navigate to the dependency array
+  }, [user]);
 
   if (!isLoaded) {
     return <BarLoader className="mb-4" width={"100%"} color="#36d7b7" />;
